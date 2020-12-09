@@ -3,7 +3,7 @@ const cors = require("cors");
 const app = express();
 app.use(express.json());
 app.use(cors()); //CORS validation
-
+app.use(express.static("build")); //Frontend Page
 //DEFAULT DATA
 let notes = [
   {
