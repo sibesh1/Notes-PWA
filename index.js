@@ -73,15 +73,19 @@ app.post("/api/notes", (request, response) => {
 });
 
 //UPDATE IMPORTANT OR NOT IMPORTANT REQUESTS
-app.put("/api/notes/:id", (request, response) => {
-  const id = Number(request.params.id);
-  const note = notes.find((n) => n.id === id);
-  note.important = !note.important;
-  if (note) {
-    response.json(note);
-  } else {
-    response.status(404).end();
-  }
+app.put("/api/notes/:id", (request, response, next) => {
+  const body = request.body;
+
+  const note = {
+    content: body.content,
+    important: body.important,
+  };
+
+  Note.findByIdAndUpdate(request.params.id, note, { new: true })
+    .then((updatedNote) => {
+      response.json(updatedNote);
+    })
+    .catch((error) => next(error));
 });
 
 //DELETE REQUESTS
