@@ -1,12 +1,11 @@
-const express = require("express");
-const cors = require("cors");
-require("dotenv").config();
-const Note = require("./models/mongo");
-
 //MIDDLEWARE
+require("dotenv").config();
+const express = require("express");
 const app = express();
-app.use(express.json());
+const cors = require("cors");
 app.use(cors()); //CORS validation
+const Note = require("./models/mongo");
+app.use(express.json());
 app.use(express.static("build")); //Frontend Page
 
 //DEFAULT DATA
