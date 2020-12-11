@@ -1,9 +1,15 @@
 const express = require("express");
 const cors = require("cors");
+require("dotenv").config();
+const Note = require("./models/mongo");
+
+//MIDDLEWARE
 const app = express();
 app.use(express.json());
 app.use(cors()); //CORS validation
 app.use(express.static("build")); //Frontend Page
+app.use(unknownEndpoint);
+
 //DEFAULT DATA
 let notes = [
   {
@@ -27,52 +33,47 @@ let notes = [
 ];
 
 //GET REQUESTS
-app.get("/", (request, response) => {
-  response.send("<h1>Backend API for Notes App</h1>");
-});
-
 app.get("/api/notes", (request, response) => {
-  response.json(notes);
+  Note.find({}).then((note) => {
+    response.json(note);
+  });
 });
 
 app.get("/api/notes/:id", (request, response) => {
-  const id = Number(request.params.id);
-  const note = notes.find((n) => n.id === id);
-  if (note) {
-    response.json(note);
-  } else {
-    response.status(404).end();
-  }
+  Note.findById(request.params.id)
+    .then((note) => {
+      if (note) {
+        response.json(note);
+      } else {
+        response.status(404).end();
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+      response.status(500).end();
+    });
 });
 
 //POST REQUESTS
-const generateId = () => {
-  const maxId = notes.length > 0 ? Math.max(...notes.map((n) => n.id)) : 0;
-  return maxId + 1;
-};
-
 app.post("/api/notes", (request, response) => {
   const body = request.body;
 
-  if (!body.content) {
-    return response.status(400).json({
-      error: "content missing",
-    });
+  if (body.content === undefined) {
+    return response.status(400).json({ error: "content missing" });
   }
 
-  const note = {
+  const note = new Note({
     content: body.content,
-    important: body.important || Math.random() > 0.5,
+    important: body.important || Math.random() < 0.5,
     date: new Date(),
-    id: generateId(),
-  };
+  });
 
-  notes = notes.concat(note);
-
-  response.json(note);
+  note.save().then((savedNote) => {
+    response.json(savedNote);
+  });
 });
 
-//UPDATE IMPORTANT REQUESTS
+//UPDATE IMPORTANT OR NOT IMPORTANT REQUESTS
 app.put("/api/notes/:id", (request, response) => {
   const id = Number(request.params.id);
   const note = notes.find((n) => n.id === id);
@@ -85,14 +86,20 @@ app.put("/api/notes/:id", (request, response) => {
 });
 
 //DELETE REQUESTS
-app.delete("/api/notes/:id", (request, response) => {
-  const id = Number(request.params.id);
-  notes = notes.filter((note) => note.id !== id);
-
-  response.status(204).end();
+app.delete("/api/notes/:id", (request, response, next) => {
+  Note.findByIdAndRemove(request.params.id)
+    .then((result) => {
+      response.status(204).end();
+    })
+    .catch((error) => next(error));
 });
 
-const PORT = process.env.PORT || 3001;
+//ERROR HANDLING
+const unknownEndpoint = (request, response) => {
+  response.status(404).send({ error: "unknown endpoint" });
+};
+
+const PORT = process.env.PORT;
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
