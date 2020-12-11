@@ -1,12 +1,13 @@
 //MIDDLEWARE
-require("dotenv").config();
 const express = require("express");
 const app = express();
+const bodyParser = require("body-parser");
+require("dotenv").config();
+const Note = require("./models/note");
 const cors = require("cors");
-app.use(cors()); //CORS validation
-const Note = require("./models/mongo");
-app.use(express.json());
-app.use(express.static("build")); //Frontend Page
+app.use(cors());
+app.use(bodyParser.json());
+app.use(express.static("build"));
 
 //DEFAULT DATA
 let notes = [
