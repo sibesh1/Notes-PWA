@@ -8,7 +8,6 @@ const app = express();
 app.use(express.json());
 app.use(cors()); //CORS validation
 app.use(express.static("build")); //Frontend Page
-app.use(unknownEndpoint);
 
 //DEFAULT DATA
 let notes = [
@@ -98,6 +97,7 @@ app.delete("/api/notes/:id", (request, response, next) => {
 const unknownEndpoint = (request, response) => {
   response.status(404).send({ error: "unknown endpoint" });
 };
+app.use(unknownEndpoint);
 
 const PORT = process.env.PORT;
 app.listen(PORT, () => {
