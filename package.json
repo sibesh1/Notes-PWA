@@ -13,10 +13,10 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "express-bodychecker": "^1.6.0",
-    "mongoose": "^5.11.5",
-    "morgan": "^1.10.0"
+    "mongoose": "^5.11.7"
   },
   "devDependencies": {
+    "morgan": "^1.10.0",
     "nodemon": "^2.0.6"
   },
   "author": "Sibesh Behera",
