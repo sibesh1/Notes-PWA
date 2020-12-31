@@ -12,3 +12,6 @@
 #### Database - Mongodb with MongoAtlas
 
 #### Backend - NodeJS
+
+### Added feature to login and access only notes posted by a specific user.Since,this only a demo project I haven't enabled creating accounts.  
+### Default Login: username = root,password = password
