@@ -1,5 +1,7 @@
 ## [A Simple Notes PWA](https://safe-crag-31056.herokuapp.com/)
 
+Link to the repo with code for the [Frontend](https://github.com/sibesh1/Notes-PWA-Frontend).
+
 ### It has some basics features :
 
 1.Add A New Note  
